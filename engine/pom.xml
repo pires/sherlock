@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+  xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>pt.lighthouselabs.sherlock</groupId>
+    <artifactId>sherlock</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <artifactId>sherlock-engine</artifactId>
+  <packaging>jar</packaging>
+  <name>Sherlock Engine</name>
+
+  <properties>
+    <cassandra.version>1.2.3</cassandra.version>
+    <hibernate.version>4.1.12.Final</hibernate.version>
+    <jee.version>6.0</jee.version>
+  </properties>
+
+  <repositories>
+    <repository>
+      <id>sonatype-nexus</id>
+      <name>Kundera Public Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>kundera-missing</id>
+      <name>Kundera Public Missing Resources Repository</name>
+      <url>http://kundera.googlecode.com/svn/maven2/maven-missing-resources</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
+
+  <dependencies>
+    <dependency>
+      <groupId>pt.lighthouselabs.sherlock</groupId>
+      <artifactId>sherlock-api</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>pt.lighthouselabs.sherlock</groupId>
+      <artifactId>sherlock-daos</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>joda-time</groupId>
+      <artifactId>joda-time</artifactId>
+    </dependency>
+    <!-- Logging -->
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.testng</groupId>
+      <artifactId>testng</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- EJB3 unit-testing -->
+    <!-- ATTENTION: this dependency should be located above 'javaee-api' 
+      dependency. Otherwise the tests won't run. See http://forums.netbeans.org/topic21275.html -->
+    <dependency>
+      <groupId>org.glassfish.extras</groupId>
+      <artifactId>glassfish-embedded-all</artifactId>
+      <version>3.2-b06</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- Java EE -->
+    <dependency>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <version>${jee.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-ejb-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>validate</phase>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

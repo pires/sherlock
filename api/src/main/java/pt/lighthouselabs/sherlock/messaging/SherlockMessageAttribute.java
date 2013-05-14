@@ -10,14 +10,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package pt.lighthouselabs.sherlock.api.messaging;
+package pt.lighthouselabs.sherlock.messaging;
 
 /**
- * All possible {@link JobMessage} attribute names.
+ * All possible {@link SherlockMessage} attribute names.
  */
-public enum JobAttributeHeader {
+public enum SherlockMessageAttribute {
 	APP_ID,
 	TIMESTAMP,
 	USERNAME,
 	SESSION_ID,
+	METHOD,
+	PATH,
+	ACTION,
+	ELAPSED,
+	REQUEST_BODY,
+	RESPONSE_STATUS,
+	RESPONSE_BODY
 }

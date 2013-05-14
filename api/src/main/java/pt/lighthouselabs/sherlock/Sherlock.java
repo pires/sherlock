@@ -10,13 +10,14 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package pt.lighthouselabs.sherlock.api;
+package pt.lighthouselabs.sherlock;
 
 /**
  * Sherlock API constants.
  */
 public final class Sherlock {
 
-	public static final String QUEUE_NAME = "jms/sherlock/queue";
+	public static final String JNDI_QUEUE_NAME = "jms/sherlock/queue";
+	public static final String JNDI_QUEUE_CONN_FACTORY_NAME = "jms/sherlock/connFactory";
 	
 }

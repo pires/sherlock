@@ -10,7 +10,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-package pt.lighthouselabs.sherlock.api.messaging;
+package pt.lighthouselabs.sherlock.messaging;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -19,50 +19,50 @@ import java.util.Map;
 /**
  *
  */
-public class JobMessage implements Serializable, Cloneable {
+public class SherlockMessage implements Serializable, Cloneable {
 
 	private static final long serialVersionUID = 1L;
 
-	private Map<JobAttributeHeader, Object> attributes;
+	private Map<SherlockMessageAttribute, Object> attributes;
 
-	public JobMessage() {
-		this.attributes = new HashMap<JobAttributeHeader, Object>();
+	public SherlockMessage() {
+		this.attributes = new HashMap<SherlockMessageAttribute, Object>();
 	}
 
-	public Map<JobAttributeHeader, Object> getAttributes() {
+	public Map<SherlockMessageAttribute, Object> getAttributes() {
 		return attributes;
 	}
 
-	public void setAttributes(Map<JobAttributeHeader, Object> Attributes) {
+	public void setAttributes(Map<SherlockMessageAttribute, Object> Attributes) {
 		this.attributes = Attributes;
 	}
 
-	public String getStringAttribute(JobAttributeHeader attribute) {
+	public String getStringAttribute(SherlockMessageAttribute attribute) {
 		String result = attributes.get(attribute) == null ? "null"
 		        : (String) attributes.get(attribute);
 		return result;
 	}
 
-	public Long getLongAttribute(JobAttributeHeader attribute) {
+	public Long getLongAttribute(SherlockMessageAttribute attribute) {
 		Long result = attributes.get(attribute) == null ? 0L
 		        : (Long) attributes.get(attribute);
 		return result;
 	}
 
-	public Boolean getBooleanAttribute(JobAttributeHeader attribute) {
+	public Boolean getBooleanAttribute(SherlockMessageAttribute attribute) {
 		Boolean result = attributes.get(attribute) == null ? false
 		        : (Boolean) attributes.get(attribute);
 		return result;
 	}
 
-	public void putAttribute(JobAttributeHeader attribute, Object value) {
+	public void putAttribute(SherlockMessageAttribute attribute, Object value) {
 		this.attributes.put(attribute, value);
 	}
 
-	public JobMessage clone() {
-		JobMessage jobMsg = new JobMessage();
+	public SherlockMessage clone() {
+		SherlockMessage jobMsg = new SherlockMessage();
 		// don't ever clone an hashmap unless you know what you're doing.
-		for (Map.Entry<JobAttributeHeader, Object> entry : this.attributes
+		for (Map.Entry<SherlockMessageAttribute, Object> entry : this.attributes
 		        .entrySet())
 			jobMsg.putAttribute(entry.getKey(), entry.getValue());
 

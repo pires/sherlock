@@ -2,7 +2,7 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>pt.lighthouselabs.sherlock</groupId>
-  <artifactId>parent</artifactId>
+  <artifactId>sherlock</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
 
@@ -13,12 +13,17 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <java.version>1.6</java.version>
-    <cassandra.version>1.2.3</cassandra.version>
-    <hibernate.version>4.1.12.Final</hibernate.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
+      <!-- JAX-RS WS -->
+      <dependency>
+        <groupId>com.sun.jersey</groupId>
+        <artifactId>jersey-servlet</artifactId>
+        <version>1.17.1</version>
+        <scope>provided</scope>
+      </dependency>
       <!-- Logging -->
       <dependency>
         <groupId>ch.qos.logback</groupId>
@@ -53,6 +58,29 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>1.2</version>
+        <executions>
+          <execution>
+            <id>enforce-java</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[3.0.4,)</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[1.6,)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>com.mycila.maven-license-plugin</groupId>
         <artifactId>maven-license-plugin</artifactId>
@@ -106,50 +134,26 @@
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-enforcer-plugin</artifactId>
-          <version>1.2</version>
-          <executions>
-            <execution>
-              <id>enforce-java</id>
-              <goals>
-                <goal>enforce</goal>
-              </goals>
-              <configuration>
-                <rules>
-                  <requireMavenVersion>
-                    <version>[3.0.4,)</version>
-                  </requireMavenVersion>
-                  <requireJavaVersion>
-                    <version>[1.6,)</version>
-                  </requireJavaVersion>
-                </rules>
-              </configuration>
-            </execution>
-          </executions>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-ejb-plugin</artifactId>
-          <version>2.3</version>
-          <configuration>
-            <ejbVersion>3.1</ejbVersion>
-          </configuration>
-        </plugin>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
           <version>2.14.1</version>
+          <configuration>
+            <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</argLine>
+            <threadCount>1</threadCount>
+            <parallel>true</parallel>
+            <includes>
+              <include>**/SetupTestSuite.java</include>
+              <include>**/*Test.java</include>
+            </includes>
+          </configuration>
         </plugin>
       </plugins>
     </pluginManagement>
   </build>
 
   <modules>
-    <module>data-model</module>
-    <module>daos</module>
     <module>api</module>
-    <module>consumer</module>
-    <module>rest</module>
+    <module>daos</module>
+    <module>engine</module>
   </modules>
 
 </project>
