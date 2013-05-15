@@ -18,6 +18,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
+import com.impetus.client.cassandra.common.CassandraConstants;
+
 /**
  * Abstract Data-Access Object class to be implemented by all DAO's.
  */
@@ -59,8 +61,9 @@ public abstract class AbstractDao<T> {
 	}
 
 	public List<T> findAll() {
-		String sql = "select t from " + entityClass.getSimpleName() + " t";
-		return getEntityManager().createQuery(sql, entityClass).getResultList();
+		em.setProperty("cql.version", CassandraConstants.CQL_VERSION_3_0);
+		String cql = "select t from " + entityClass.getSimpleName() + " t";
+		return getEntityManager().createQuery(cql).getResultList();
 	}
 
 	public int count() {

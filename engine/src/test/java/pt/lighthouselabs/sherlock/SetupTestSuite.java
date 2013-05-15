@@ -14,6 +14,7 @@ package pt.lighthouselabs.sherlock;
 
 import java.io.File;
 
+import org.apache.cassandra.service.EmbeddedCassandraService;
 import org.glassfish.embeddable.CommandResult;
 import org.glassfish.embeddable.Deployer;
 import org.glassfish.embeddable.GlassFish;
@@ -45,11 +46,14 @@ public final class SetupTestSuite {
 	@BeforeSuite
 	public final void setUp() {
 		try {
-			// basic config
+			// set-up embedded Cassandra instance
+			logger.info("Starting embedded Cassandra instance..");
+			new EmbeddedCassandraService().start();
+			logger.info("Cassandra started.");
+
+			// set-up embedded Glassfish instance
 			GlassFishProperties gfProperties = new GlassFishProperties();
 			gfProperties.setPort("http-listener", SERVER_PORT);
-
-			// start instance
 			gfServer = GlassFishRuntime.bootstrap().newGlassFish(gfProperties);
 			gfServer.start();
 
@@ -79,7 +83,9 @@ public final class SetupTestSuite {
 			archive.addClassPath(new File("../daos/target", "classes/pt"));
 			archive.addClassPath(new File("target", "classes"));
 			archive.addClassPath(new File("target", "test-classes"));
-//			archive.addMetadata(new File("../daos/src/main/resources/META-INF", "persistence.xml"));
+			// TODO remove persistence.xml from test-classes and add it manually
+			// archive.addMetadata(new
+			// File("../daos/src/main/resources/META-INF", "persistence.xml"));
 
 			// Deploy the scattered web archive.
 			appName = deployer

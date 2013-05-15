@@ -17,6 +17,8 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import com.google.common.base.Objects;
+
 @Entity
 @Table(name = "audit_records", schema = "SherlockKS@SherlockPU")
 public class AuditRecord {
@@ -44,6 +46,22 @@ public class AuditRecord {
 
 	@Column
 	private String responseBody;
+
+	public AuditRecord() {
+	}
+
+	public AuditRecord(AuditRecordId id, String method, String path,
+	        String action, long elapsed, String requestBody,
+	        short responseStatus, String responseBody) {
+		this.id = id;
+		this.method = method;
+		this.path = path;
+		this.action = action;
+		this.elapsed = elapsed;
+		this.requestBody = requestBody;
+		this.responseStatus = responseStatus;
+		this.responseBody = responseBody;
+	}
 
 	public AuditRecordId getId() {
 		return id;
@@ -107,6 +125,14 @@ public class AuditRecord {
 
 	public void setResponseBody(String responseBody) {
 		this.responseBody = responseBody;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("id", id).add("method", method)
+		        .add("path", path).add("action", action)
+		        .add("elapsed", elapsed).add("requestBody", requestBody)
+		        .add("responseBody", responseBody).toString();
 	}
 
 }

@@ -15,11 +15,10 @@ package pt.lighthouselabs.sherlock.model;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import com.google.common.base.Objects;
+
 @Embeddable
 public class AuditRecordId {
-
-	@Column
-	private String appId;
 
 	@Column
 	private String username;
@@ -30,16 +29,14 @@ public class AuditRecordId {
 	@Column
 	private Long timestamp;
 
-	public AuditRecordId(final String appId, final String username,
-	        final String sessionId, final Long timestamp) {
-		this.appId = appId;
+	public AuditRecordId() {
+	}
+
+	public AuditRecordId(final String username, final String sessionId,
+	        final Long timestamp) {
 		this.username = username;
 		this.sessionId = sessionId;
 		this.timestamp = timestamp;
-	}
-
-	public String getAppId() {
-		return appId;
 	}
 
 	public String getUsername() {
@@ -52,6 +49,13 @@ public class AuditRecordId {
 
 	public Long getTimestamp() {
 		return timestamp;
+	}
+
+	@Override
+	public String toString() {
+		return Objects.toStringHelper(this).add("username", username)
+		        .add("sessionId", sessionId).add("timestamp", timestamp)
+		        .toString();
 	}
 
 }

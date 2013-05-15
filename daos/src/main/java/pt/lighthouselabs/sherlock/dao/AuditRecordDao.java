@@ -12,6 +12,9 @@
  */
 package pt.lighthouselabs.sherlock.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Local;
 import javax.ejb.Stateless;
 
@@ -26,6 +29,23 @@ public class AuditRecordDao extends AbstractDao<AuditRecord> {
 
 	public AuditRecordDao() {
 		super(AuditRecord.class);
+	}
+
+	/**
+	 * Retrieves all records from two timestamps.
+	 * @param begin
+	 * @param end
+	 * @return
+	 * 
+	 * TODO check that begin is no greater than end
+	 */
+	public List<AuditRecord> find_all_between_time_interval(Long begin, Long end) {
+		String cql = "select a from AuditRecord a where a.id.timestamp between "
+		        + begin + " and " + end;
+		List<AuditRecord> results = getEntityManager().createQuery(cql)
+		        .getResultList();
+
+		return results == null ? new ArrayList<AuditRecord>() : results;
 	}
 
 }
