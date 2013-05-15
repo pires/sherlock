@@ -24,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pt.lighthouselabs.sherlock.Sherlock;
-import pt.lighthouselabs.sherlock.messaging.SherlockMessageProducer;
 
 /**
  * JMS message producer.

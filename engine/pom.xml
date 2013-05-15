@@ -10,7 +10,7 @@
   </parent>
 
   <artifactId>sherlock-engine</artifactId>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <name>Sherlock Engine</name>
 
   <properties>
@@ -18,31 +18,6 @@
     <hibernate.version>4.1.12.Final</hibernate.version>
     <jee.version>6.0</jee.version>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>sonatype-nexus</id>
-      <name>Kundera Public Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>kundera-missing</id>
-      <name>Kundera Public Missing Resources Repository</name>
-      <url>http://kundera.googlecode.com/svn/maven2/maven-missing-resources</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
 
   <dependencies>
     <dependency>
@@ -58,6 +33,10 @@
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
     </dependency>
     <!-- Logging -->
     <dependency>
@@ -80,11 +59,10 @@
       <version>3.2-b06</version>
       <scope>test</scope>
     </dependency>
-    <!-- Java EE -->
     <dependency>
-      <groupId>javax</groupId>
-      <artifactId>javaee-api</artifactId>
-      <version>${jee.version}</version>
+      <groupId>javax.ejb</groupId>
+      <artifactId>ejb-api</artifactId>
+      <version>3.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>
@@ -92,13 +70,23 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-ejb-plugin</artifactId>
-        <executions>
-          <execution>
-            <phase>validate</phase>
-          </execution>
-        </executions>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <!-- Adds directories from the local Maven repo containing certain 
+            internal Glassfish dependencies, as endorsed directories for the Oracle/Sun 
+            JDK. This will ensure that the warning "Incorrect @Resource annotation class 
+            definition - missing lookup attribute" is not thrown by embedded Glassfish, 
+            as the JARs in this endorsed dir have the Resource class required by embedded 
+            Glassfish. -->
+          <argLine>-Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
+        </configuration>
+        <dependencies>
+          <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.annotation</artifactId>
+            <version>3.2-b06</version>
+          </dependency>
+        </dependencies>
       </plugin>
     </plugins>
   </build>

@@ -8,7 +8,7 @@
   </appender>
 
   <!-- edit logger levels here -->
-  <logger name="pt.lighthouselabs.sherlock" level="ALL" />
+  <logger name="pt.lighthouselabs.sherlock" level="TRACE" />
   <logger name="com.impetus.kundera" level="TRACE" />
 
   <!-- default logger level -->

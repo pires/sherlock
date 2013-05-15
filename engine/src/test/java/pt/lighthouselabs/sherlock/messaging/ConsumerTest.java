@@ -13,23 +13,13 @@
 package pt.lighthouselabs.sherlock.messaging;
 
 import javax.jms.JMSException;
-import javax.naming.NamingException;
 
 import org.joda.time.DateTime;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.testng.annotations.Test;
 
-import pt.lighthouselabs.sherlock.EjbHelper;
-import pt.lighthouselabs.sherlock.messaging.SherlockMessage;
-import pt.lighthouselabs.sherlock.messaging.SherlockMessageAttribute;
+import pt.lighthouselabs.sherlock.AbstractTest;
 
-public class ConsumerTest {
-
-	private static final Logger logger = LoggerFactory
-	        .getLogger(ConsumerTest.class);
-
-	private static Producer producer = null;
+public class ConsumerTest extends AbstractTest {
 
 	/**
 	 * TODO find out how can we check ConsumerMDB.onMessage. mocks? read
@@ -38,24 +28,11 @@ public class ConsumerTest {
 	 * Right now, we can assert it's working by looking at the log output.
 	 */
 	@Test
-	public static void basicTest() throws JMSException {
+	public void basicTest() throws JMSException {
 		SherlockMessage msg = new SherlockMessage();
 		msg.putAttribute(SherlockMessageAttribute.TIMESTAMP, DateTime.now()
 		        .getMillis());
 		getProducer().sendObjectMessage(msg);
-	}
-
-	private static Producer getProducer() {
-		if (producer == null) {
-			try {
-				producer = (Producer) EjbHelper
-				        .getBean("java:global/sherlock/Producer");
-			} catch (NamingException e) {
-				logger.error("There was error retrieving Producer.", e);
-			}
-		}
-
-		return producer;
 	}
 
 }
