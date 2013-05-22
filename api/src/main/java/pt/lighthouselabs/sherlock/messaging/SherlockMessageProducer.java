@@ -12,6 +12,7 @@
  */
 package pt.lighthouselabs.sherlock.messaging;
 
+import javax.annotation.Resource;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -21,22 +22,18 @@ import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 
+import pt.lighthouselabs.sherlock.Sherlock;
+
 /**
  * JMS producer service.
  */
-public abstract class SherlockMessageProducer {
+public class SherlockMessageProducer {
 
-	protected QueueConnection connection;
-	protected QueueSession session;
-	protected MessageProducer producer;
+	@Resource(name = Sherlock.JNDI_QUEUE_CONN_FACTORY_NAME)
+	private QueueConnectionFactory connFactory;
 
-	public void init(final QueueConnectionFactory connectionFactory,
-	        final Destination targetQueue) throws JMSException {
-		connection = connectionFactory.createQueueConnection();
-		session = connection
-		        .createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
-		producer = session.createProducer(targetQueue);
-	}
+	@Resource(name = Sherlock.JNDI_QUEUE_NAME)
+	private Destination targetQueue;
 
 	/**
 	 * Sends an object-message to a parameterized JMS Queue.
@@ -47,12 +44,23 @@ public abstract class SherlockMessageProducer {
 	 */
 	public void sendObjectMessage(final SherlockMessage obj)
 	        throws JMSException {
+		// init JMS
+		QueueConnection connection = connFactory.createQueueConnection();
+		QueueSession session = connection.createQueueSession(false,
+		        Session.AUTO_ACKNOWLEDGE);
+		MessageProducer producer = session.createProducer(targetQueue);
+
 		// assemble message
 		final ObjectMessage msg = session.createObjectMessage();
 		msg.setObject(obj);
 
 		// send message
 		producer.send(msg);
+
+		// clean-up
+		producer.close();
+		session.close();
+		connection.close();
 	}
 
 }

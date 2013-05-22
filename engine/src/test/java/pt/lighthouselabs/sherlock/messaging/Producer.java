@@ -18,7 +18,12 @@ import javax.annotation.Resource;
 import javax.ejb.Stateless;
 import javax.jms.Destination;
 import javax.jms.JMSException;
+import javax.jms.MessageProducer;
+import javax.jms.ObjectMessage;
+import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
+import javax.jms.QueueSession;
+import javax.jms.Session;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,21 +45,43 @@ public class Producer extends SherlockMessageProducer {
 	@Resource(name = Sherlock.JNDI_QUEUE_NAME)
 	private Destination queue;
 
+	private QueueConnection connection;
+	private QueueSession session;
+	private MessageProducer producer;
+
 	@PostConstruct
 	private void initJMS() throws JMSException {
 		logger.info("Initializing connection...");
-		super.init(connFactory, queue);
+		connection = connFactory.createQueueConnection();
+		session = connection
+		        .createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
+		producer = session.createProducer(queue);
 	}
 
 	@PreDestroy
 	private void closeJMS() {
 		logger.info("Finalizing connection...");
-
 		try {
 			connection.close();
 		} catch (JMSException e) {
 			logger.error("There was an error while closing JMS connection.", e);
 		}
+	}
+
+	/**
+	 * Encapsulates parameterized object in a new {@link ObjectMessage} and
+	 * dispatches it to queue.
+	 * 
+	 * @param obj
+	 * @throws JMSException
+	 */
+	public void sendMessage(SherlockMessage obj) throws JMSException {
+		// assemble message
+		final ObjectMessage msg = session.createObjectMessage();
+		msg.setObject(obj);
+
+		// send message
+		producer.send(msg);
 	}
 
 }

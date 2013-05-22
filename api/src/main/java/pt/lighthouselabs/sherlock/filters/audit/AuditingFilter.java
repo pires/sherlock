@@ -14,12 +14,17 @@ package pt.lighthouselabs.sherlock.filters.audit;
 
 import java.io.IOException;
 
+import javax.jms.JMSException;
 import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.ext.Provider;
 
 import org.joda.time.DateTime;
 
 import pt.lighthouselabs.sherlock.filters.CustomHttpServletRequestWrapper;
+import pt.lighthouselabs.sherlock.messaging.SherlockMessage;
+import pt.lighthouselabs.sherlock.messaging.SherlockMessageAttribute;
+import pt.lighthouselabs.sherlock.messaging.SherlockMessageProducer;
 
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.spi.container.ContainerRequest;
@@ -39,6 +44,9 @@ public class AuditingFilter implements ResourceFilter, ContainerRequestFilter,
 	private HttpServletRequest hr;
 	private final AbstractMethod am;
 	CustomHttpServletRequestWrapper wrapper;
+
+	@Context
+	private SherlockMessageProducer producer;
 
 	private long requestTimestamp = 0L;
 
@@ -74,19 +82,39 @@ public class AuditingFilter implements ResourceFilter, ContainerRequestFilter,
 		 * If principal name ever is an email, do the following: 1) Get UserDao
 		 * by context lookup since injection is not possible 2) Find by email
 		 */
-		final String appId = "testApp"; // TODO this shall be supplied by the Sherlock client
+		final String appId = "testApp"; // TODO this shall be supplied by the
+		                                // Sherlock client
 		final String username = hr.getUserPrincipal().getName();
 		final String sessionId = hr.getSession(true).getId();
-		
+
 		final Long elapsed = DateTime.now().getMillis() - requestTimestamp;
 		final String method = request.getMethod();
 		final String path = request.getRequestUri().toASCIIString();
 		final String action = am.getAnnotation(Audit.class).value();
-		final String requestContent = wrapper.getBody();
+		final String requestBody = wrapper.getBody();
 		final int responseStatus = response.getStatus();
-		final String responseContent = response.getEntity().toString();
+		final String responseBody = response.getEntity().toString();
 
-		// TODO persist
+		// send message
+		SherlockMessage msg = new SherlockMessage();
+		msg.putAttribute(SherlockMessageAttribute.APP_ID, appId);
+		msg.putAttribute(SherlockMessageAttribute.USERNAME, username);
+		msg.putAttribute(SherlockMessageAttribute.SESSION_ID, sessionId);
+		msg.putAttribute(SherlockMessageAttribute.TIMESTAMP, requestTimestamp);
+		msg.putAttribute(SherlockMessageAttribute.ELAPSED, elapsed);
+		msg.putAttribute(SherlockMessageAttribute.METHOD, method);
+		msg.putAttribute(SherlockMessageAttribute.PATH, path);
+		msg.putAttribute(SherlockMessageAttribute.ACTION, action);
+		msg.putAttribute(SherlockMessageAttribute.REQUEST_BODY, requestBody);
+		msg.putAttribute(SherlockMessageAttribute.RESPONSE_STATUS,
+		        responseStatus);
+		msg.putAttribute(SherlockMessageAttribute.RESPONSE_BODY, responseBody);
+		try {
+			producer.sendObjectMessage(msg);
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 		return response;
 	}
