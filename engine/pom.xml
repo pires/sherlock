@@ -70,6 +70,21 @@
   <build>
     <plugins>
       <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <configuration>
+          <filesets>
+            <fileset>
+              <directory>${basedir}</directory>
+              <includes>
+                <include>gfembed*/**</include>
+                <include>derby.log</include>
+                <include>server.log</include>
+              </includes>
+            </fileset>
+          </filesets>
+        </configuration>
+      </plugin>
+      <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- Adds directories from the local Maven repo containing certain 
