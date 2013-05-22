@@ -29,31 +29,32 @@ public class AuditRecordDaoTest extends AbstractTest {
 
 	@Test
 	public void persist_auditrecord_test() {
-		AuditRecordId arid1 = new AuditRecordId("user1", "0", 0L);
+		Long t = 0L;
+		AuditRecordId arid1 = new AuditRecordId("APP1", "user1", "0", t);
 		AuditRecord ar1 = new AuditRecord();
 		ar1.setId(arid1);
 		getAuditRecordDao().create(ar1);
 
-		AuditRecordId arid2 = new AuditRecordId("user2", "1", DateTime.now()
-		        .getMillis());
+		t = DateTime.now().getMillis();
+		AuditRecordId arid2 = new AuditRecordId("APP1", "user2", "1", t);
 		AuditRecord ar2 = new AuditRecord();
 		ar2.setId(arid2);
 		getAuditRecordDao().create(ar2);
 
-		AuditRecordId arid3 = new AuditRecordId("user1", "1", DateTime.now()
-		        .getMillis());
+		t -= 1000;
+		AuditRecordId arid3 = new AuditRecordId("APP1", "user1", "1", t);
 		AuditRecord ar3 = new AuditRecord();
 		ar3.setId(arid3);
 		getAuditRecordDao().create(ar3);
 
-		AuditRecordId arid4 = new AuditRecordId("user1", "0", DateTime.now()
-		        .getMillis());
+		t += 100;
+		AuditRecordId arid4 = new AuditRecordId("APP1", "user1", "0", t);
 		AuditRecord ar4 = new AuditRecord();
 		ar4.setId(arid4);
 		getAuditRecordDao().create(ar4);
 
-		AuditRecordId arid5 = new AuditRecordId("user1", "0", DateTime.now()
-		        .getMillis());
+		t -= 5000;
+		AuditRecordId arid5 = new AuditRecordId("APP1", "user1", "0", t);
 		AuditRecord ar5 = new AuditRecord();
 		ar5.setId(arid5);
 		getAuditRecordDao().create(ar5);
@@ -67,15 +68,15 @@ public class AuditRecordDaoTest extends AbstractTest {
 	}
 
 	@Test
-	public void find_auditrecord_from_specific_user() {
+	public void find_all_between_time_interval() {
 		final long begin = 0L;
 		final long end = DateTime.now().getMillis();
 		for (AuditRecord record : getAuditRecordDao()
-		        .find_all_between_time_interval(begin + 1, end)) {
+		        .find_all_by_appId_and_between_time_interval("app1", begin + 1,
+		                end)) {
 			assertTrue(record.getId().getTimestamp() > begin);
 			assertTrue(record.getId().getTimestamp() < end);
 		}
-
 	}
 
 }

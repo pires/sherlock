@@ -21,6 +21,9 @@ import com.google.common.base.Objects;
 public class AuditRecordId {
 
 	@Column
+	private String appId;
+
+	@Column
 	private String username;
 
 	@Column
@@ -32,11 +35,16 @@ public class AuditRecordId {
 	public AuditRecordId() {
 	}
 
-	public AuditRecordId(final String username, final String sessionId,
-	        final Long timestamp) {
+	public AuditRecordId(final String appId, final String username,
+	        final String sessionId, final Long timestamp) {
+		this.appId = appId;
 		this.username = username;
 		this.sessionId = sessionId;
 		this.timestamp = timestamp;
+	}
+
+	public String getAppId() {
+		return appId;
 	}
 
 	public String getUsername() {
@@ -53,9 +61,9 @@ public class AuditRecordId {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("username", username)
-		        .add("sessionId", sessionId).add("timestamp", timestamp)
-		        .toString();
+		return Objects.toStringHelper(this).add("appId", appId)
+		        .add("username", username).add("sessionId", sessionId)
+		        .add("timestamp", timestamp).toString();
 	}
 
 }

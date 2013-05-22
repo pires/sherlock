@@ -18,13 +18,23 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import com.google.common.base.Objects;
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
 
 @Entity
 @Table(name = "audit_records", schema = "SherlockKS@SherlockPU")
+@IndexCollection(columns = { @Index(name = "appIdIndex", type = "UTF8Type"),
+        @Index(name = "timestampIndex", type = "LongType") })
 public class AuditRecord {
 
 	@EmbeddedId
 	private AuditRecordId id;
+
+	@Column
+	private String appIdIndex;
+
+	@Column
+	private Long timestampIndex;
 
 	@Column
 	private String method;
@@ -36,13 +46,13 @@ public class AuditRecord {
 	private String action;
 
 	@Column
-	private long elapsed;
+	private Long elapsed;
 
 	@Column
 	private String requestBody;
 
 	@Column
-	private short responseStatus;
+	private Integer responseStatus;
 
 	@Column
 	private String responseBody;
@@ -50,10 +60,13 @@ public class AuditRecord {
 	public AuditRecord() {
 	}
 
-	public AuditRecord(AuditRecordId id, String method, String path,
-	        String action, long elapsed, String requestBody,
-	        short responseStatus, String responseBody) {
+	public AuditRecord(AuditRecordId id, String appIdIndex,
+	        Long timestampIndex, String method, String path, String action,
+	        Long elapsed, String requestBody, Integer responseStatus,
+	        String responseBody) {
 		this.id = id;
+		this.appIdIndex = appIdIndex;
+		this.timestampIndex = timestampIndex;
 		this.method = method;
 		this.path = path;
 		this.action = action;
@@ -69,6 +82,22 @@ public class AuditRecord {
 
 	public void setId(AuditRecordId id) {
 		this.id = id;
+	}
+
+	public String getAppIdIndex() {
+		return appIdIndex;
+	}
+
+	public void setAppIdIndex(String appIdIndex) {
+		this.appIdIndex = appIdIndex;
+	}
+
+	public Long getTimestampIndex() {
+		return timestampIndex;
+	}
+
+	public void setTimestampIndex(Long timestampIndex) {
+		this.timestampIndex = timestampIndex;
 	}
 
 	public String getMethod() {
@@ -95,11 +124,11 @@ public class AuditRecord {
 		this.action = action;
 	}
 
-	public long getElapsed() {
+	public Long getElapsed() {
 		return elapsed;
 	}
 
-	public void setElapsed(long elapsed) {
+	public void setElapsed(Long elapsed) {
 		this.elapsed = elapsed;
 	}
 
@@ -111,11 +140,11 @@ public class AuditRecord {
 		this.requestBody = requestBody;
 	}
 
-	public short getResponseStatus() {
+	public Integer getResponseStatus() {
 		return responseStatus;
 	}
 
-	public void setResponseStatus(short responseStatus) {
+	public void setResponseStatus(Integer responseStatus) {
 		this.responseStatus = responseStatus;
 	}
 
