@@ -21,7 +21,6 @@ public enum SherlockMessageAttribute {
 	USERNAME,
 	SESSION_ID,
 	METHOD,
-	PATH,
 	ACTION,
 	ELAPSED,
 	REQUEST_BODY,

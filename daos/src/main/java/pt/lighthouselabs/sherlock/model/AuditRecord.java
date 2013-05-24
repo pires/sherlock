@@ -40,9 +40,6 @@ public class AuditRecord {
 	private String method;
 
 	@Column
-	private String path;
-
-	@Column
 	private String action;
 
 	@Column
@@ -61,14 +58,12 @@ public class AuditRecord {
 	}
 
 	public AuditRecord(AuditRecordId id, String appIdIndex,
-	        Long timestampIndex, String method, String path, String action,
-	        Long elapsed, String requestBody, Integer responseStatus,
-	        String responseBody) {
+	        Long timestampIndex, String method, String action, Long elapsed,
+	        String requestBody, Integer responseStatus, String responseBody) {
 		this.id = id;
 		this.appIdIndex = appIdIndex;
 		this.timestampIndex = timestampIndex;
 		this.method = method;
-		this.path = path;
 		this.action = action;
 		this.elapsed = elapsed;
 		this.requestBody = requestBody;
@@ -106,14 +101,6 @@ public class AuditRecord {
 
 	public void setMethod(String method) {
 		this.method = method;
-	}
-
-	public String getPath() {
-		return path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public String getAction() {
@@ -159,8 +146,8 @@ public class AuditRecord {
 	@Override
 	public String toString() {
 		return Objects.toStringHelper(this).add("id", id).add("method", method)
-		        .add("path", path).add("action", action)
-		        .add("elapsed", elapsed).add("requestBody", requestBody)
+		        .add("action", action).add("elapsed", elapsed)
+		        .add("requestBody", requestBody)
 		        .add("responseBody", responseBody).toString();
 	}
 
