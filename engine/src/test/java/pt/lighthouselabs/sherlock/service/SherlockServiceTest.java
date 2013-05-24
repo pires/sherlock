@@ -16,6 +16,9 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.lang.reflect.Type;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
@@ -30,12 +33,16 @@ import pt.lighthouselabs.sherlock.SetupTestSuite;
 import pt.lighthouselabs.sherlock.model.AuditRecord;
 import pt.lighthouselabs.sherlock.rest.SherlockService;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 /**
  * Tests {@link SherlockService}.
  */
 public class SherlockServiceTest extends AbstractTest {
-	
-	private static final Logger logger = LoggerFactory.getLogger(SherlockServiceTest.class);
+
+	private static final Logger logger = LoggerFactory
+	        .getLogger(SherlockServiceTest.class);
 
 	private static final String URL = "http://localhost:"
 	        + SetupTestSuite.SERVER_PORT + "/sherlock";
@@ -56,30 +63,33 @@ public class SherlockServiceTest extends AbstractTest {
 
 	/**
 	 * Tests reading a list of {@link AuditRecord}.
+	 */
+	@Test
+	public void testListAllAuditRecordsFromDao() {
+		List<AuditRecord> records = getAuditRecordDao().findAll();
+		assertTrue(records.size() > 0);
+		for (AuditRecord record : records)
+			logger.info("{}", record);
+	}
+
+	/**
+	 * Tests reading a list of {@link AuditRecord}.
 	 * 
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
 	@Test
-	public void testListAllAuditRecords() throws ClientProtocolException,
-	        IOException {
-		/*
-		 * This can be uncommented when AuditRecordDao is packaged as EJB.
-		 */
-//		HttpResponse response = RESTClient.doHttpGet(URL.concat("/list"), null,
-//		        null);
-//		assertEquals(response.getStatusLine().getStatusCode(), 200);
-//
-//		Type paginateType = new TypeToken<List<AuditRecord>>() {
-//		}.getType();
-//		Reader reader = new InputStreamReader(
-//		        response.getEntity().getContent(), "UTF-8");
-//		List<AuditRecord> records = new Gson().fromJson(reader, paginateType);
-		
-		List<AuditRecord> records = getAuditRecordDao().findAll();
-		assertTrue(records.size() > 0);
-		for (AuditRecord record : records)
-			logger.info("{}", record);
+	public void testListAllAuditRecordsFromREST()
+	        throws ClientProtocolException, IOException {
+		HttpResponse response = RESTClient.doHttpGet(URL.concat("/list"), null,
+		        null);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+
+		Type paginateType = new TypeToken<List<AuditRecord>>() {
+		}.getType();
+		Reader reader = new InputStreamReader(
+		        response.getEntity().getContent(), "UTF-8");
+		List<AuditRecord> records = new Gson().fromJson(reader, paginateType);
 	}
 
 }
