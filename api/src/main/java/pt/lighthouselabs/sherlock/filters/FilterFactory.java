@@ -12,15 +12,16 @@
  */
 package pt.lighthouselabs.sherlock.filters;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
+import javax.ws.rs.ext.ContextResolver;
+import javax.ws.rs.ext.Providers;
 
 import pt.lighthouselabs.sherlock.filters.audit.Audit;
 import pt.lighthouselabs.sherlock.filters.audit.AuditingFilter;
+import pt.lighthouselabs.sherlock.messaging.SherlockMessageProducer;
 
 import com.sun.jersey.api.model.AbstractMethod;
 import com.sun.jersey.spi.container.ResourceFilter;
@@ -31,20 +32,24 @@ import com.sun.jersey.spi.container.ResourceFilterFactory;
  * particular AbstractMethod of a resource.
  * 
  */
-@Provider
 public class FilterFactory implements ResourceFilterFactory {
 
 	@Context
-	HttpServletRequest hr;
+	private Providers providers;
 
 	public List<ResourceFilter> create(AbstractMethod method) {
-		List<ResourceFilter> filters = new ArrayList<ResourceFilter>();
-
 		// is @Audit present?
-		if (method.isAnnotationPresent(Audit.class))
-			filters.add(new AuditingFilter(hr, method));
+		if (method.isAnnotationPresent(Audit.class)) {
+			// get message producer
+			final ContextResolver<SherlockMessageProducer> resolver = providers
+			        .getContextResolver(SherlockMessageProducer.class, null);
+			// return filter
+			return Collections
+			        .<ResourceFilter> singletonList(new AuditingFilter(method
+			                .getAnnotation(Audit.class).value(), "SID0",
+			                resolver.getContext(SherlockMessageProducer.class)));
+		}
 
-		return filters;
+		return null;
 	}
-
 }

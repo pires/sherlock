@@ -12,47 +12,51 @@
  */
 package pt.lighthouselabs.sherlock.filters.audit;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.jms.JMSException;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.ext.Provider;
 
 import org.joda.time.DateTime;
 
-import pt.lighthouselabs.sherlock.filters.CustomHttpServletRequestWrapper;
 import pt.lighthouselabs.sherlock.messaging.SherlockMessage;
 import pt.lighthouselabs.sherlock.messaging.SherlockMessageAttribute;
 import pt.lighthouselabs.sherlock.messaging.SherlockMessageProducer;
 
-import com.sun.jersey.api.model.AbstractMethod;
+import com.sun.jersey.api.container.ContainerException;
+import com.sun.jersey.core.util.ReaderWriter;
 import com.sun.jersey.spi.container.ContainerRequest;
 import com.sun.jersey.spi.container.ContainerRequestFilter;
 import com.sun.jersey.spi.container.ContainerResponse;
 import com.sun.jersey.spi.container.ContainerResponseFilter;
+import com.sun.jersey.spi.container.ContainerResponseWriter;
 import com.sun.jersey.spi.container.ResourceFilter;
 
 /**
  * Filter all incoming requests, look for session and logged-user information
  * and put it into our audit log.
  */
-@Provider
-public class AuditingFilter implements ResourceFilter, ContainerRequestFilter,
-        ContainerResponseFilter {
+public final class AuditingFilter implements ResourceFilter,
+        ContainerRequestFilter, ContainerResponseFilter {
 
-	private HttpServletRequest hr;
-	private final AbstractMethod am;
-	CustomHttpServletRequestWrapper wrapper;
-
-	@Context
 	private SherlockMessageProducer producer;
 
 	private long requestTimestamp = 0L;
+	private String requestBody;
+	private final String appId = "testApp"; // TODO to be supplied by app
+	private String username, method;
+	private final String action, sessionId;
+	private int responseStatus;
+	private String responseBody;
 
-	public AuditingFilter(HttpServletRequest hr, AbstractMethod am) {
-		this.hr = hr;
-		this.am = am;
+	public AuditingFilter(String auditValue, String sessionId,
+	        SherlockMessageProducer producer) {
+		this.action = auditValue;
+		this.sessionId = sessionId;
+		this.producer = producer;
 	}
 
 	/**
@@ -60,14 +64,24 @@ public class AuditingFilter implements ResourceFilter, ContainerRequestFilter,
 	 */
 	public ContainerRequest filter(ContainerRequest request) {
 		requestTimestamp = DateTime.now().getMillis();
+		username = request.getUserPrincipal().getName();
+		method = request.getMethod();
 
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+		InputStream in = request.getEntityInputStream();
 		try {
-			wrapper = new CustomHttpServletRequestWrapper(hr);
-			request.setEntityInputStream(wrapper.getInputStream());
+			if (in.available() > 0) {
+				ReaderWriter.writeTo(in, out);
+				byte[] requestEntity = out.toByteArray();
+				request.setEntityInputStream(new ByteArrayInputStream(
+				        requestEntity));
+				requestBody = new String(out.toByteArray(), "UTF-8");
+			}
 		} catch (IOException e) {
-			// ignore?
+			throw new ContainerException(e);
 		}
 
+		System.out.println("FILTERING REQUEST: " + username);
 		return request;
 	}
 
@@ -76,47 +90,67 @@ public class AuditingFilter implements ResourceFilter, ContainerRequestFilter,
 	 */
 	public ContainerResponse filter(ContainerRequest request,
 	        ContainerResponse response) {
-		/*
-		 * TODO
-		 * 
-		 * If principal name ever is an email, do the following: 1) Get UserDao
-		 * by context lookup since injection is not possible 2) Find by email
-		 */
-		final String appId = "testApp"; // TODO this shall be supplied by the
-		                                // Sherlock client
-		final String username = hr.getUserPrincipal().getName();
-		final String sessionId = hr.getSession(true).getId();
-
 		final Long elapsed = DateTime.now().getMillis() - requestTimestamp;
-		final String method = request.getMethod();
-		final String path = request.getRequestUri().toASCIIString();
-		final String action = am.getAnnotation(Audit.class).value();
-		final String requestBody = wrapper.getBody();
-		final int responseStatus = response.getStatus();
-		final String responseBody = response.getEntity().toString();
+		System.out.println("FILTERING RESPONSE");
 
-		// send message
-		SherlockMessage msg = new SherlockMessage();
-		msg.putAttribute(SherlockMessageAttribute.APP_ID, appId);
-		msg.putAttribute(SherlockMessageAttribute.USERNAME, username);
-		msg.putAttribute(SherlockMessageAttribute.SESSION_ID, sessionId);
-		msg.putAttribute(SherlockMessageAttribute.TIMESTAMP, requestTimestamp);
-		msg.putAttribute(SherlockMessageAttribute.ELAPSED, elapsed);
-		msg.putAttribute(SherlockMessageAttribute.METHOD, method);
-		msg.putAttribute(SherlockMessageAttribute.PATH, path);
-		msg.putAttribute(SherlockMessageAttribute.ACTION, action);
-		msg.putAttribute(SherlockMessageAttribute.REQUEST_BODY, requestBody);
-		msg.putAttribute(SherlockMessageAttribute.RESPONSE_STATUS,
-		        responseStatus);
-		msg.putAttribute(SherlockMessageAttribute.RESPONSE_BODY, responseBody);
-		try {
-			producer.sendObjectMessage(msg);
-		} catch (JMSException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		response.setContainerResponseWriter(new Adapter(response
+		        .getContainerResponseWriter()));
+
+		if (producer != null) {
+			// craft message
+			SherlockMessage msg = new SherlockMessage();
+			msg.putAttribute(SherlockMessageAttribute.APP_ID, appId);
+			msg.putAttribute(SherlockMessageAttribute.USERNAME, username);
+			msg.putAttribute(SherlockMessageAttribute.SESSION_ID, sessionId);
+			msg.putAttribute(SherlockMessageAttribute.TIMESTAMP,
+			        requestTimestamp);
+			msg.putAttribute(SherlockMessageAttribute.ELAPSED, elapsed);
+			msg.putAttribute(SherlockMessageAttribute.METHOD, method);
+			msg.putAttribute(SherlockMessageAttribute.ACTION, action);
+			msg.putAttribute(SherlockMessageAttribute.REQUEST_BODY, requestBody);
+			msg.putAttribute(SherlockMessageAttribute.RESPONSE_STATUS,
+			        responseStatus);
+			msg.putAttribute(SherlockMessageAttribute.RESPONSE_BODY,
+			        responseBody);
+
+			if (producer.isReady()) {
+				try {
+					producer.sendObjectMessage(msg);
+				} catch (JMSException e) {
+					throw new ContainerException(e);
+				}
+			}
 		}
 
 		return response;
+	}
+
+	/**
+	 * We need this to send response to client.
+	 */
+	private final class Adapter implements ContainerResponseWriter {
+		private final ContainerResponseWriter crw;
+		private ContainerResponse response;
+		private ByteArrayOutputStream baos;
+
+		Adapter(ContainerResponseWriter crw) {
+			this.crw = crw;
+		}
+
+		public OutputStream writeStatusAndHeaders(long contentLength,
+		        ContainerResponse response) throws IOException {
+			responseStatus = response.getStatus();
+			responseBody = "TODO";
+			this.response = response;
+			return this.baos = new ByteArrayOutputStream();
+		}
+
+		public void finish() throws IOException {
+			byte[] entity = baos.toByteArray();
+			OutputStream out = crw.writeStatusAndHeaders(-1, response);
+			out.write(entity);
+			crw.finish();
+		}
 	}
 
 	public ContainerRequestFilter getRequestFilter() {
@@ -124,7 +158,7 @@ public class AuditingFilter implements ResourceFilter, ContainerRequestFilter,
 	}
 
 	public ContainerResponseFilter getResponseFilter() {
-		return null;
+		return this;
 	}
 
 }

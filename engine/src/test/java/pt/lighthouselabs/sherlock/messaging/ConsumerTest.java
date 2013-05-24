@@ -13,6 +13,7 @@
 package pt.lighthouselabs.sherlock.messaging;
 
 import javax.jms.JMSException;
+import javax.naming.NamingException;
 
 import org.joda.time.DateTime;
 import org.testng.annotations.Test;
@@ -26,9 +27,12 @@ public class ConsumerTest extends AbstractTest {
 	 * database for new audit message?
 	 * 
 	 * Right now, we can assert it's working by looking at the log output.
+	 * 
+	 * @throws JMSException
+	 * @throws NamingException
 	 */
 	@Test
-	public void basicTest() throws JMSException {
+	public void basicTest() throws JMSException, NamingException {
 		SherlockMessage msg = new SherlockMessage();
 		msg.putAttribute(SherlockMessageAttribute.TIMESTAMP, DateTime.now()
 		        .getMillis());

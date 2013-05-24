@@ -12,7 +12,6 @@
  */
 package pt.lighthouselabs.sherlock.messaging;
 
-import javax.annotation.Resource;
 import javax.jms.Destination;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -21,6 +20,8 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 import javax.jms.Session;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
 
 import pt.lighthouselabs.sherlock.Sherlock;
 
@@ -29,11 +30,19 @@ import pt.lighthouselabs.sherlock.Sherlock;
  */
 public class SherlockMessageProducer {
 
-	@Resource(name = Sherlock.JNDI_QUEUE_CONN_FACTORY_NAME)
 	private QueueConnectionFactory connFactory;
-
-	@Resource(name = Sherlock.JNDI_QUEUE_NAME)
 	private Destination targetQueue;
+
+	public SherlockMessageProducer() {
+		try {
+			final InitialContext jndi = new InitialContext();
+			connFactory = (QueueConnectionFactory) jndi
+			        .lookup(Sherlock.JNDI_QUEUE_CONN_FACTORY_NAME);
+			targetQueue = (Destination) jndi.lookup(Sherlock.JNDI_QUEUE_NAME);
+		} catch (NamingException e) {
+			// isReady will return false, so can ignore here
+		}
+	}
 
 	/**
 	 * Sends an object-message to a parameterized JMS Queue.
@@ -41,6 +50,7 @@ public class SherlockMessageProducer {
 	 * @param targetQueue
 	 * @param obj
 	 * @throws JMSException
+	 * @throws NamingException
 	 */
 	public void sendObjectMessage(final SherlockMessage obj)
 	        throws JMSException {
@@ -61,6 +71,16 @@ public class SherlockMessageProducer {
 		producer.close();
 		session.close();
 		connection.close();
+	}
+
+	/**
+	 * Returns true if producer is ready to send message, false otherwise.
+	 * <p>
+	 * This method is used to prevent JAX-RS filter disruption, if anything goes
+	 * wrong with JMS.
+	 */
+	public boolean isReady() {
+		return connFactory != null && targetQueue != null;
 	}
 
 }

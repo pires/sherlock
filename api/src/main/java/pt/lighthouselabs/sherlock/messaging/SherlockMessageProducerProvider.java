@@ -15,6 +15,7 @@ package pt.lighthouselabs.sherlock.messaging;
 import java.lang.reflect.Type;
 
 import javax.ws.rs.core.Context;
+import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.Provider;
 
 import com.sun.jersey.api.core.HttpContext;
@@ -28,26 +29,31 @@ import com.sun.jersey.spi.inject.InjectableProvider;
  * JAX-RS provider for injecting {@link SherlockMessageProducer}.
  */
 @Provider
-public class SherlockMessageProducerProvider extends
+public final class SherlockMessageProducerProvider extends
         AbstractHttpContextInjectable<SherlockMessageProducer> implements
-        InjectableProvider<Context, Type> {
+        InjectableProvider<Context, Type>,
+        ContextResolver<SherlockMessageProducer> {
 
 	@Override
 	public Injectable<SherlockMessageProducer> getInjectable(
-	        ComponentContext ic, Context a, Type c) {
-		if (c.equals(SherlockMessageProducer.class))
+	        ComponentContext componentContext, Context annotation, Type type) {
+		if (type.equals(SherlockMessageProducer.class))
 			return this;
 		return null;
 	}
 
 	@Override
 	public ComponentScope getScope() {
-		// TODO should this be a singleton?
 		return ComponentScope.PerRequest;
 	}
 
 	@Override
-	public SherlockMessageProducer getValue(HttpContext c) {
+	public SherlockMessageProducer getValue(HttpContext httpContext) {
+		return new SherlockMessageProducer();
+	}
+
+	@Override
+	public SherlockMessageProducer getContext(Class<?> type) {
 		return new SherlockMessageProducer();
 	}
 
