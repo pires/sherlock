@@ -38,21 +38,23 @@ public class SherlockMessage implements Serializable, Cloneable {
 	}
 
 	public String getStringAttribute(SherlockMessageAttribute attribute) {
-		String result = attributes.get(attribute) == null ? "null"
-		        : (String) attributes.get(attribute);
-		return result;
+		return attributes.get(attribute) == null ? "null" : (String) attributes
+		        .get(attribute);
 	}
 
 	public Long getLongAttribute(SherlockMessageAttribute attribute) {
-		Long result = attributes.get(attribute) == null ? 0L
-		        : (Long) attributes.get(attribute);
-		return result;
+		return attributes.get(attribute) == null ? 0L : (Long) attributes
+		        .get(attribute);
+	}
+
+	public Integer getIntegerAttribute(SherlockMessageAttribute attribute) {
+		return attributes.get(attribute) == null ? 0 : (Integer) attributes
+		        .get(attribute);
 	}
 
 	public Boolean getBooleanAttribute(SherlockMessageAttribute attribute) {
-		Boolean result = attributes.get(attribute) == null ? false
-		        : (Boolean) attributes.get(attribute);
-		return result;
+		return attributes.get(attribute) == null ? false : (Boolean) attributes
+		        .get(attribute);
 	}
 
 	public void putAttribute(SherlockMessageAttribute attribute, Object value) {
@@ -60,13 +62,22 @@ public class SherlockMessage implements Serializable, Cloneable {
 	}
 
 	public SherlockMessage clone() {
-		SherlockMessage jobMsg = new SherlockMessage();
+		SherlockMessage msg = new SherlockMessage();
 		// don't ever clone an hashmap unless you know what you're doing.
 		for (Map.Entry<SherlockMessageAttribute, Object> entry : this.attributes
 		        .entrySet())
-			jobMsg.putAttribute(entry.getKey(), entry.getValue());
+			msg.putAttribute(entry.getKey(), entry.getValue());
 
-		return jobMsg;
+		return msg;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<SherlockMessageAttribute, Object> attribute : attributes
+		        .entrySet())
+			sb.append(attribute.getKey().name()).append(":")
+			        .append(attribute.getValue()).append(" | ");
+		return sb.toString();
+	}
 }
