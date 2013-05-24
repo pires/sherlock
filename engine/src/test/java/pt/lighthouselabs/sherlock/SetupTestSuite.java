@@ -80,12 +80,10 @@ public final class SetupTestSuite {
 			 * ignore EJB timers, as they blow up :-/
 			 */
 			archive.addClassPath(new File("../api/target", "classes"));
-			archive.addClassPath(new File("../daos/target", "classes/pt"));
+			// archive.addClassPath(new File("../daos/target", "classes/pt"));
 			archive.addClassPath(new File("target", "classes"));
 			archive.addClassPath(new File("target", "test-classes"));
-			// TODO remove persistence.xml from test-classes and add it manually
-			// archive.addMetadata(new
-			// File("../daos/src/main/resources/META-INF", "persistence.xml"));
+			archive.addMetadata(new File("src/main/webapp/WEB-INF", "web.xml"));
 
 			// Deploy the scattered web archive.
 			appName = deployer

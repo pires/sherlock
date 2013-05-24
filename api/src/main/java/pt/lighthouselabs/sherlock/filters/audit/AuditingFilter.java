@@ -64,7 +64,8 @@ public final class AuditingFilter implements ResourceFilter,
 	 */
 	public ContainerRequest filter(ContainerRequest request) {
 		requestTimestamp = DateTime.now().getMillis();
-		username = request.getUserPrincipal().getName();
+		username = request.getUserPrincipal() == null ? "UNAUTHENTICATED"
+		        : request.getUserPrincipal().getName();
 		method = request.getMethod();
 
 		ByteArrayOutputStream out = new ByteArrayOutputStream();

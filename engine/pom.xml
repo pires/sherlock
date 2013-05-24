@@ -14,10 +14,35 @@
   <name>Sherlock Engine</name>
 
   <properties>
-    <cassandra.version>1.2.3</cassandra.version>
+    <cassandra.version>1.2.4</cassandra.version>
     <hibernate.version>4.1.12.Final</hibernate.version>
     <jee.version>6.0</jee.version>
   </properties>
+
+  <repositories>
+    <repository>
+      <id>sonatype-nexus</id>
+      <name>Kundera Public Repository</name>
+      <url>https://oss.sonatype.org/content/repositories/releases</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>false</enabled>
+      </snapshots>
+    </repository>
+    <repository>
+      <id>kundera-missing</id>
+      <name>Kundera Public Missing Resources Repository</name>
+      <url>http://kundera.googlecode.com/svn/maven2/maven-missing-resources</url>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+  </repositories>
 
   <dependencies>
     <dependency>
@@ -25,11 +50,70 @@
       <artifactId>sherlock-api</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- Kundera & Cassandra -->
     <dependency>
-      <groupId>pt.lighthouselabs.sherlock</groupId>
-      <artifactId>sherlock-daos</artifactId>
-      <version>${project.version}</version>
+      <groupId>org.apache.cassandra</groupId>
+      <artifactId>cassandra-thrift</artifactId>
+      <version>${cassandra.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>log4j</groupId>
+          <artifactId>log4j</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>commons-logging</groupId>
+          <artifactId>commons-logging</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>javax.servlet</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
+    <dependency>
+      <groupId>com.impetus.client</groupId>
+      <artifactId>kundera-cassandra</artifactId>
+      <version>2.6-SNAPSHOT</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.mortbay.jetty</groupId>
+          <artifactId>servlet-api</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.hectorclient</groupId>
+      <artifactId>hector-core</artifactId>
+      <version>1.1-3</version>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>slf4j-log4j12</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <!-- Jersey -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <!-- Other dependencies -->
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
