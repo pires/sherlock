@@ -177,7 +177,8 @@
             definition - missing lookup attribute" is not thrown by embedded Glassfish, 
             as the JARs in this endorsed dir have the Resource class required by embedded 
             Glassfish. -->
-          <argLine>-Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
+          <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m
+            -Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
         </configuration>
         <dependencies>
           <dependency>

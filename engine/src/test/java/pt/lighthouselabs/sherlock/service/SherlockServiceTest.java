@@ -19,15 +19,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.joda.time.DateTime;
 import org.testng.annotations.Test;
 
-import pt.lighthouselabs.sherlock.AbstractTest;
 import pt.lighthouselabs.sherlock.RESTClient;
 import pt.lighthouselabs.sherlock.SetupTestSuite;
 import pt.lighthouselabs.sherlock.model.AuditRecord;
@@ -39,10 +39,7 @@ import com.google.gson.reflect.TypeToken;
 /**
  * Tests {@link SherlockService}.
  */
-public class SherlockServiceTest extends AbstractTest {
-
-	private static final Logger logger = LoggerFactory
-	        .getLogger(SherlockServiceTest.class);
+public class SherlockServiceTest {
 
 	private static final String URL = "http://localhost:"
 	        + SetupTestSuite.SERVER_PORT + "/sherlock";
@@ -54,22 +51,11 @@ public class SherlockServiceTest extends AbstractTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void testFireAuditEvent() throws ClientProtocolException,
+	public void test_fire_audit_event() throws ClientProtocolException,
 	        IOException {
 		HttpResponse response = RESTClient.doHttpGet(URL.concat("/fire"), null,
 		        null);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
-	}
-
-	/**
-	 * Tests reading a list of {@link AuditRecord}.
-	 */
-	@Test
-	public void testListAllAuditRecordsFromDao() {
-		List<AuditRecord> records = getAuditRecordDao().findAll();
-		assertTrue(records.size() > 0);
-		for (AuditRecord record : records)
-			logger.info("{}", record);
 	}
 
 	/**
@@ -79,17 +65,72 @@ public class SherlockServiceTest extends AbstractTest {
 	 * @throws IOException
 	 */
 	@Test
-	public void testListAllAuditRecordsFromREST()
-	        throws ClientProtocolException, IOException {
+	public void test_list_all_auditrecords() throws ClientProtocolException,
+	        IOException {
 		HttpResponse response = RESTClient.doHttpGet(URL.concat("/list"), null,
 		        null);
 		assertEquals(response.getStatusLine().getStatusCode(), 200);
-
 		Type paginateType = new TypeToken<List<AuditRecord>>() {
 		}.getType();
 		Reader reader = new InputStreamReader(
 		        response.getEntity().getContent(), "UTF-8");
 		List<AuditRecord> records = new Gson().fromJson(reader, paginateType);
+		assertTrue(records.size() > 0);
+	}
+
+	/**
+	 * Tests reading a list of {@link AuditRecord} by application ID.
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	@Test
+	public void test_list_all_auditrecords_by_appId()
+	        throws ClientProtocolException, IOException {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("appId", "APP2");
+
+		HttpResponse response = RESTClient.doHttpGet(
+		        URL.concat("/list/by_app_id"), null, params);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+		Type paginateType = new TypeToken<List<AuditRecord>>() {
+		}.getType();
+		Reader reader = new InputStreamReader(
+		        response.getEntity().getContent(), "UTF-8");
+		List<AuditRecord> records = new Gson().fromJson(reader, paginateType);
+		for (AuditRecord record : records)
+			assertEquals(record.getAppIdIndex(), "APP2");
+	}
+
+	/**
+	 * Tests reading a list of {@link AuditRecord} by application ID and between
+	 * time window.
+	 * 
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
+	@Test
+	public void test_list_all_auditrecords_by_appId_and_between_timestamp()
+	        throws ClientProtocolException, IOException {
+		Map<String, String> params = new HashMap<String, String>();
+		params.put("appId", "APP1");
+		params.put("begin", "1");
+		final Long timestamp = DateTime.now().getMillis();
+		params.put("end", Long.toString(timestamp));
+		HttpResponse response = RESTClient.doHttpGet(
+		        URL.concat("/list/by_app_id_and_between_timestamps"), null,
+		        params);
+		assertEquals(response.getStatusLine().getStatusCode(), 200);
+		Type paginateType = new TypeToken<List<AuditRecord>>() {
+		}.getType();
+		Reader reader = new InputStreamReader(
+		        response.getEntity().getContent(), "UTF-8");
+		List<AuditRecord> records = new Gson().fromJson(reader, paginateType);
+		for (AuditRecord record : records) {
+			assertEquals(record.getAppIdIndex(), "APP1");
+			assertTrue(record.getId().getTimestamp() > 1L);
+			assertTrue(record.getId().getTimestamp() < timestamp);
+		}
 	}
 
 }

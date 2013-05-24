@@ -15,6 +15,7 @@
         value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
       <property name="kundera.cache.provider.class"
         value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />
+      <property name="kundera.client.property" value="kundera-cassandra.xml" />
       <property name="kundera.cache.config.resource" value="/ehcache-test.xml" />
       <property name="kundera.ddl.auto.prepare" value="create" />
     </properties>

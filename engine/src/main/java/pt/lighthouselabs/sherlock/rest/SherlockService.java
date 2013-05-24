@@ -63,7 +63,7 @@ public class SherlockService {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/list")
+	@Path("/list/by_app_id")
 	public List<AuditRecord> retrieveAllAuditRecordsFromAppId(
 	        @QueryParam("appId") String appId) {
 		return arDao.find_all_by_appId(appId);
@@ -75,7 +75,7 @@ public class SherlockService {
 	 */
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/list")
+	@Path("/list/by_app_id_and_between_timestamps")
 	public List<AuditRecord> retrieveAllAuditRecordsFromAppIdAndBetweenTimestamps(
 	        @QueryParam("appId") String appId, @QueryParam("begin") Long begin,
 	        @QueryParam("end") Long end) {
