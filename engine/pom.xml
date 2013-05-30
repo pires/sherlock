@@ -13,12 +13,6 @@
   <packaging>war</packaging>
   <name>Sherlock Engine</name>
 
-  <properties>
-    <cassandra.version>1.2.3</cassandra.version>
-    <hibernate.version>4.1.12.Final</hibernate.version>
-    <jee.version>6.0</jee.version>
-  </properties>
-
   <dependencies>
     <dependency>
       <groupId>pt.lighthouselabs.sherlock</groupId>
@@ -30,6 +24,20 @@
       <artifactId>sherlock-daos</artifactId>
       <version>${project.version}</version>
     </dependency>
+    <!-- Jersey -->
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-servlet</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.sun.jersey</groupId>
+      <artifactId>jersey-json</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+    </dependency>
+    <!-- Other dependencies -->
     <dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
@@ -93,7 +101,8 @@
             definition - missing lookup attribute" is not thrown by embedded Glassfish, 
             as the JARs in this endorsed dir have the Resource class required by embedded 
             Glassfish. -->
-          <argLine>-Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
+          <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m
+            -Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
         </configuration>
         <dependencies>
           <dependency>

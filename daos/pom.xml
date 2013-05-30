@@ -15,7 +15,6 @@
 
   <properties>
     <cassandra.version>1.2.4</cassandra.version>
-    <hibernate.version>4.1.12.Final</hibernate.version>
     <jee.version>6.0</jee.version>
   </properties>
 
