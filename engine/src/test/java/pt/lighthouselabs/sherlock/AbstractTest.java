@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import pt.lighthouselabs.sherlock.dao.AuditRecordDao;
-import pt.lighthouselabs.sherlock.messaging.Producer;
 
 /**
  * Test helper class.
@@ -28,21 +27,7 @@ public abstract class AbstractTest {
 	private static final Logger logger = LoggerFactory
 	        .getLogger(AbstractTest.class);
 
-	private Producer producer = null;
 	private AuditRecordDao arDao = null;
-
-	protected final Producer getProducer() {
-		if (producer == null) {
-			try {
-				producer = (Producer) EjbHelper
-				        .getBean("java:global/sherlock/Producer");
-			} catch (NamingException e) {
-				logger.error("There was error retrieving Producer.", e);
-			}
-		}
-
-		return producer;
-	}
 
 	protected final AuditRecordDao getAuditRecordDao() {
 		if (arDao == null) {
