@@ -45,12 +45,11 @@ public final class AuditingFilter implements ResourceFilter,
 	private SherlockMessageProducer producer;
 
 	private long requestTimestamp = 0L;
-	private String requestBody;
+	private String requestBody, responseBody;
 	private final String appId = "testApp"; // TODO to be supplied by app
 	private String username, method;
 	private final String action, sessionId;
 	private int responseStatus;
-	private String responseBody;
 
 	public AuditingFilter(String auditValue, String sessionId,
 	        SherlockMessageProducer producer) {
@@ -114,13 +113,12 @@ public final class AuditingFilter implements ResourceFilter,
 			msg.putAttribute(SherlockMessageAttribute.RESPONSE_BODY,
 			        responseBody);
 
-			if (producer.isReady()) {
+			if (producer.isReady())
 				try {
 					producer.sendObjectMessage(msg);
 				} catch (JMSException e) {
 					throw new ContainerException(e);
 				}
-			}
 		}
 
 		return response;

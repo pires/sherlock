@@ -6,7 +6,8 @@
   <persistence-unit name="SherlockPU">
     <provider>com.impetus.kundera.KunderaPersistence</provider>
     <properties>
-      <property name="kundera.nodes" value="localhost" />
+      <property name="kundera.nodes"
+        value="10.10.1.211,10.10.1.212,10.10.1.213,10.10.1.214" />
       <property name="kundera.port" value="9160" />
       <property name="kundera.keyspace" value="SherlockKS" />
       <property name="kundera.dialect" value="cassandra" />
@@ -14,9 +15,9 @@
         value="com.impetus.client.cassandra.thrift.ThriftClientFactory" />
       <property name="kundera.cache.provider.class"
         value="com.impetus.kundera.cache.ehcache.EhCacheProvider" />
-      <property name="kundera.client.property" value="kundera-cassandra.xml" />
       <property name="kundera.cache.config.resource" value="/ehcache-test.xml" />
-      <property name="kundera.ddl.auto.prepare" value="create" />
+      <property name="kundera.ddl.auto.prepare" value="update" />
+      <property name="kundera.client.property" value="kundera-cassandra.xml" />
     </properties>
   </persistence-unit>
 </persistence>

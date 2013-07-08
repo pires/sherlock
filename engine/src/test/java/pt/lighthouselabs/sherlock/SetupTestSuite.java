@@ -80,7 +80,7 @@ public final class SetupTestSuite {
 			 * ignore EJB timers, as they blow up :-/
 			 */
 			archive.addClassPath(new File("../api/target", "classes"));
-			 archive.addClassPath(new File("../daos/target", "classes/pt"));
+			archive.addClassPath(new File("../daos/target", "classes/pt"));
 			archive.addClassPath(new File("target", "classes"));
 			archive.addClassPath(new File("target", "test-classes"));
 			archive.addMetadata(new File("src/main/webapp/WEB-INF", "web.xml"));

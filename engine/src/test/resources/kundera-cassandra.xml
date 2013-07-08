@@ -16,11 +16,6 @@
             <property name="replication.factor" value="4" />
             <property name="durable.writes" value="true" />
             <property name="inverted.indexing.enabled" value="true" />
-            <!-- Load-balancing -->
-            <property name="loadbalancing.policy" value="roundrobin"></property>
-            <property name="retry" value="true"></property>
-            <property name="retry.delay" value="1"></property>
-            <property name="max.wait" value="3000"></property>
           </properties>
         </schema>
       </schemas>
