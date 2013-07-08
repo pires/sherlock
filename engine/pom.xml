@@ -103,6 +103,7 @@
             Glassfish. -->
           <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m
             -Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
+          <skip>true</skip>
         </configuration>
         <dependencies>
           <dependency>
