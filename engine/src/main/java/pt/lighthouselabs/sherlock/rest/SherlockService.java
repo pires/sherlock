@@ -21,10 +21,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 
 import pt.lighthouselabs.sherlock.dao.AuditRecordDao;
-import pt.lighthouselabs.sherlock.filters.audit.Audit;
 import pt.lighthouselabs.sherlock.model.AuditRecord;
 
 /**
@@ -36,17 +34,6 @@ public class SherlockService {
 
 	@EJB
 	private AuditRecordDao arDao;
-
-	/**
-	 * Triggers and audit-event.
-	 */
-	@GET
-	@Produces(MediaType.APPLICATION_JSON)
-	@Path("/fire")
-	@Audit("fire-event")
-	public Response fire() {
-		return Response.ok().build();
-	}
 
 	/**
 	 * @return a list of all persisted {@link AuditRecord}.

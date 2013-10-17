@@ -45,20 +45,6 @@ public class SherlockServiceTest {
 	        + SetupTestSuite.SERVER_PORT + "/sherlock";
 
 	/**
-	 * Tests firing an audit event.
-	 * 
-	 * @throws ClientProtocolException
-	 * @throws IOException
-	 */
-	@Test
-	public void test_fire_audit_event() throws ClientProtocolException,
-	        IOException {
-		HttpResponse response = RESTClient.doHttpGet(URL.concat("/fire"), null,
-		        null);
-		assertEquals(response.getStatusLine().getStatusCode(), 200);
-	}
-
-	/**
 	 * Tests reading a list of {@link AuditRecord}.
 	 * 
 	 * @throws ClientProtocolException
