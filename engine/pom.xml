@@ -101,7 +101,13 @@
             Glassfish. -->
           <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m
             -Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
-          <skip>true</skip>
+          <skip>false</skip>
+          <threadCount>1</threadCount>
+          <parallel>true</parallel>
+          <includes>
+            <include>**/SetupTestSuite.java</include>
+            <include>**/*Test.java</include>
+          </includes>
         </configuration>
         <dependencies>
           <dependency>
