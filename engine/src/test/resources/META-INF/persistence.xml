@@ -5,6 +5,9 @@
   version="2.0">
   <persistence-unit name="SherlockPU">
     <provider>com.impetus.kundera.KunderaPersistence</provider>
+    
+    <class>pt.lighthouselabs.sherlock.model.AuditRecord</class>
+    
     <properties>
       <property name="kundera.nodes" value="localhost" />
       <property name="kundera.port" value="9160" />
