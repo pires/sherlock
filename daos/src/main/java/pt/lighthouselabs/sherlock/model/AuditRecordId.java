@@ -12,10 +12,10 @@
  */
 package pt.lighthouselabs.sherlock.model;
 
+import com.google.common.base.MoreObjects;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import com.google.common.base.Objects;
 
 @Embeddable
 public class AuditRecordId {
@@ -61,7 +61,7 @@ public class AuditRecordId {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("appId", appId)
+		return MoreObjects.toStringHelper(this).add("appId", appId)
 		        .add("username", username).add("sessionId", sessionId)
 		        .add("timestamp", timestamp).toString();
 	}

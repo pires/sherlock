@@ -55,36 +55,29 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <java.version>1.6</java.version>
-    <jersey.version>1.17.1</jersey.version>
+    <java.version>1.7</java.version>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <!-- JAX-RS WS -->
       <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-servlet</artifactId>
-        <version>${jersey.version}</version>
-        <scope>provided</scope>
-      </dependency>
-      <dependency>
-        <groupId>com.sun.jersey</groupId>
-        <artifactId>jersey-json</artifactId>
-        <version>${jersey.version}</version>
+        <groupId>org.glassfish.jersey.containers</groupId>
+        <artifactId>jersey-container-servlet</artifactId>
+        <version>2.13</version>
         <scope>provided</scope>
       </dependency>
       <!-- Logging -->
       <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.0.13</version>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.7</version>
       </dependency>
       <!-- Common stuff -->
       <dependency>
         <groupId>com.google.guava</groupId>
         <artifactId>guava</artifactId>
-        <version>14.0.1</version>
+        <version>18.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.code.gson</groupId>
@@ -102,6 +95,28 @@
         <artifactId>testng</artifactId>
         <version>6.8.5</version>
         <scope>test</scope>
+      </dependency>
+      <!-- for dependency convergence -->
+      <dependency>
+        <groupId>commons-codec</groupId>
+        <artifactId>commons-codec</artifactId>
+        <version>1.6</version>
+      </dependency>
+      <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>1.12</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-lang</groupId>
+        <artifactId>commons-lang</artifactId>
+        <version>2.6</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>1.1.0.Final</version>
+        <scope>provided</scope>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -124,8 +139,9 @@
                   <version>[3.0.4,)</version>
                 </requireMavenVersion>
                 <requireJavaVersion>
-                  <version>[1.6,)</version>
+                  <version>[${java.version},)</version>
                 </requireJavaVersion>
+                <DependencyConvergence/>
               </rules>
             </configuration>
           </execution>
@@ -160,11 +176,6 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-clean-plugin</artifactId>
-          <version>2.5</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>3.1</version>
           <configuration>
@@ -176,7 +187,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>2.14.1</version>
+          <version>2.15</version>
         </plugin>
       </plugins>
     </pluginManagement>

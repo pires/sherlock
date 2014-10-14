@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>pt.lighthouselabs.sherlock</groupId>
@@ -25,31 +25,35 @@
     </dependency>
     <!-- Jersey -->
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-servlet</artifactId>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>2.10</version>
+      <scope>provided</scope>
+      <type>jar</type>
     </dependency>
+    <!--
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-    </dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <scope>provided</scope>
+    </dependency>-->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
     <!-- Other dependencies -->
-    <dependency>
+    <!--<dependency>
       <groupId>joda-time</groupId>
       <artifactId>joda-time</artifactId>
-    </dependency>
+    </dependency>-->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
     </dependency>
     <!-- Logging -->
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>provided</scope>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
     </dependency>
     <!-- Testing -->
     <dependency>
@@ -59,11 +63,11 @@
     </dependency>
     <!-- EJB3 unit-testing -->
     <!-- ATTENTION: this dependency should be located above 'javaee-api' 
-      dependency. Otherwise the tests won't run. See http://forums.netbeans.org/topic21275.html -->
+    dependency. Otherwise the tests won't run. See http://forums.netbeans.org/topic21275.html -->
     <dependency>
-      <groupId>org.glassfish.extras</groupId>
+      <groupId>org.glassfish.main.extras</groupId>
       <artifactId>glassfish-embedded-all</artifactId>
-      <version>3.2-b06</version>
+      <version>4.1</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -71,6 +75,24 @@
       <artifactId>ejb-api</artifactId>
       <version>3.0</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>log4j-over-slf4j</artifactId>
+      <version>1.7.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jcl-over-slf4j</artifactId>
+      <version>1.7.7</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-jdk14</artifactId>
+      <version>1.7.7</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
@@ -106,7 +128,7 @@
               <tasks>
                 <echo>Ignoring production persistence.xml</echo>
                 <move file="../daos/target/classes/META-INF/persistence.xml"
-                  tofile="../daos/target/classes/META-INF/persistence_ignored.xml" />
+                      tofile="../daos/target/classes/META-INF/persistence_ignored.xml" />
               </tasks>
             </configuration>
           </execution>
@@ -131,11 +153,11 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <!-- Adds directories from the local Maven repo containing certain 
-            internal Glassfish dependencies, as endorsed directories for the Oracle/Sun 
-            JDK. This will ensure that the warning "Incorrect @Resource annotation class 
-            definition - missing lookup attribute" is not thrown by embedded Glassfish, 
-            as the JARs in this endorsed dir have the Resource class required by embedded 
-            Glassfish. -->
+          internal Glassfish dependencies, as endorsed directories for the Oracle/Sun 
+          JDK. This will ensure that the warning "Incorrect @Resource annotation class 
+          definition - missing lookup attribute" is not thrown by embedded Glassfish, 
+          as the JARs in this endorsed dir have the Resource class required by embedded 
+          Glassfish. -->
           <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m
             -Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
           <skip>false</skip>

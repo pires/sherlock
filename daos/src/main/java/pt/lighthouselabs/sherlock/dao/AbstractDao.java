@@ -13,10 +13,9 @@
 package pt.lighthouselabs.sherlock.dao;
 
 import java.util.List;
-
 import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceContextType;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
 /**
  * Abstract Data-Access Object class to be implemented by all DAO's.
@@ -24,34 +23,47 @@ import javax.persistence.PersistenceContextType;
 public abstract class AbstractDao<T> {
 	protected Class<T> entityClass;
 
-	@PersistenceContext(unitName = "SherlockPU",
-	        type = PersistenceContextType.TRANSACTION)
-	private EntityManager em;
+	//@PersistenceContext(unitName = "SherlockPU",
+	//        type = PersistenceContextType.TRANSACTION)
+	//private EntityManager em;
+
+  @PersistenceUnit(unitName = "SherlockPU")
+  private EntityManagerFactory emf;
 
 	public AbstractDao(Class<T> entityClass) {
 		this.entityClass = entityClass;
 	}
 
 	public EntityManager getEntityManager() {
-		return this.em;
+    EntityManager em = this.emf.createEntityManager();
+    em.getTransaction().begin();
+		return em;
 	}
 
-	public void setEntityManager(EntityManager em) {
-		this.em = em;
-	}
+	//public void setEntityManager(EntityManager em) {
+//		this.em = em;
+//	}
 
 	public void create(T entity) {
-		getEntityManager().persist(entity);
+    EntityManager em = getEntityManager();
+		em.persist(entity);
+    em.getTransaction().commit();
 	}
 
 	public T update(T entity) {
-		return getEntityManager().merge(entity);
+    EntityManager em = getEntityManager();
+		T merged = em.merge(entity);
+    em.getTransaction().commit();
+    return merged;
 	}
 
 	public void remove(Object entityId) {
 		T entity = find(entityId);
-		if (entity != null)
-			getEntityManager().remove(entity);
+		if (entity != null) {
+      EntityManager em = getEntityManager();
+      em.remove(entity);
+      em.getTransaction().commit();
+    }
 	}
 
 	public T find(Object id) {

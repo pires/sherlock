@@ -19,14 +19,15 @@ import java.util.Map;
 /**
  *
  */
-public class SherlockMessage implements Serializable, Cloneable {
+//public class SherlockMessage implements Serializable, Cloneable {
+public class SherlockMessage implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
 	private Map<SherlockMessageAttribute, Object> attributes;
 
 	public SherlockMessage() {
-		this.attributes = new HashMap<SherlockMessageAttribute, Object>();
+		this.attributes = new HashMap<>();
 	}
 
 	public Map<SherlockMessageAttribute, Object> getAttributes() {
@@ -59,16 +60,6 @@ public class SherlockMessage implements Serializable, Cloneable {
 
 	public void putAttribute(SherlockMessageAttribute attribute, Object value) {
 		this.attributes.put(attribute, value);
-	}
-
-	public SherlockMessage clone() {
-		SherlockMessage msg = new SherlockMessage();
-		// don't ever clone an hashmap unless you know what you're doing.
-		for (Map.Entry<SherlockMessageAttribute, Object> entry : this.attributes
-		        .entrySet())
-			msg.putAttribute(entry.getKey(), entry.getValue());
-
-		return msg;
 	}
 
 	@Override

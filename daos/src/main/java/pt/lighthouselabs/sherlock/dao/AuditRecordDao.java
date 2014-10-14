@@ -14,15 +14,13 @@ package pt.lighthouselabs.sherlock.dao;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.ejb.Local;
+import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
 import javax.persistence.Query;
-
 import pt.lighthouselabs.sherlock.model.AuditRecord;
 
 @Stateless
-@Local
+@LocalBean
 /**
  * DAO for {@link AuditRecord} entity.
  */
@@ -34,7 +32,7 @@ public class AuditRecordDao extends AbstractDao<AuditRecord> {
 
 	/**
 	 * Retrieves all records from an app.
-	 * 
+	 *
 	 * @param appId
 	 *            the application identifier
 	 * @return a list of {@link AuditRecord} instances
@@ -50,16 +48,19 @@ public class AuditRecordDao extends AbstractDao<AuditRecord> {
 
 	/**
 	 * Retrieves all records between two timestamps.
-	 * 
+	 *
 	 * @param begin
 	 * @param end
 	 * @return
-	 * 
+	 *
 	 *         TODO check that begin is no greater than end
 	 */
 	public List<AuditRecord> find_all_by_appId_and_between_time_interval(
 	        String appId, Long begin, Long end) {
-		String cql = "select a from AuditRecord a where a.appIdIndex = :appIdIndex and a.timestampIndex >= :begin and a.timestampIndex <= :end";
+		String cql = "select a from AuditRecord a where "
+        + "a.appIdIndex = :appIdIndex and"
+        + " a.timestampIndex >= :begin and"
+        + " a.timestampIndex <= :end";
 		Query q = getEntityManager().createQuery(cql);
 		q.setParameter("appIdIndex", appId);
 		q.setParameter("begin", begin);
