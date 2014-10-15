@@ -23,10 +23,6 @@ import javax.persistence.PersistenceUnit;
 public abstract class AbstractDao<T> {
 	protected Class<T> entityClass;
 
-	//@PersistenceContext(unitName = "SherlockPU",
-	//        type = PersistenceContextType.TRANSACTION)
-	//private EntityManager em;
-
   @PersistenceUnit(unitName = "SherlockPU")
   private EntityManagerFactory emf;
 
@@ -39,10 +35,6 @@ public abstract class AbstractDao<T> {
     em.getTransaction().begin();
 		return em;
 	}
-
-	//public void setEntityManager(EntityManager em) {
-//		this.em = em;
-//	}
 
 	public void create(T entity) {
     EntityManager em = getEntityManager();
