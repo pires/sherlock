@@ -13,7 +13,7 @@
 
   <name>Sherlock</name>
   <description>Sherlock Audit engine</description>
-  <url>https://github.com/pires/sherlock</url>
+  <url>https://github.com/tsbatista/sherlock</url>
 
   <licenses>
     <license>
@@ -24,9 +24,9 @@
   </licenses>
 
   <scm>
-    <connection>scm:git:git@github.com:pires/sherlock.git</connection>
-    <developerConnection>scm:git:git@github.com:pires/sherlock.git</developerConnection>
-    <url>git@github.com:pires/sherlock.git</url>
+    <connection>scm:git:git@github.com:tsbatista/sherlock.git</connection>
+    <developerConnection>scm:git:git@github.com:tsbatista/sherlock.git</developerConnection>
+    <url>git@github.com:tsbatista/sherlock.git</url>
   </scm>
 
   <developers>
@@ -34,6 +34,14 @@
       <id>pjpires</id>
       <name>Paulo Pires</name>
       <email>pjpires@gmail.com</email>
+      <roles>
+        <role>developer</role>
+      </roles>
+    </developer>
+    <developer>
+      <id>tsbatista</id>
+      <name>Tiago Batista</name>
+      <email>a19944@gmail.com</email>
       <roles>
         <role>developer</role>
       </roles>
@@ -60,12 +68,39 @@
 
   <dependencyManagement>
     <dependencies>
-      <!-- JAX-RS WS -->
+      <!-- javaee -->
       <dependency>
-        <groupId>org.glassfish.jersey.containers</groupId>
-        <artifactId>jersey-container-servlet</artifactId>
-        <version>2.13</version>
+        <groupId>javax</groupId>
+        <artifactId>javaee-api</artifactId>
+        <version>7.0</version>
         <scope>provided</scope>
+      </dependency>
+      <!-- JAX-RS implementation (only used by engine, easily replaced) -->
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-server</artifactId>
+        <version>2.10</version>
+        <scope>provided</scope>
+      </dependency>
+      <!-- Kundera & Cassandra -->
+      <dependency>
+        <groupId>com.impetus.kundera.client</groupId>
+        <artifactId>kundera-cassandra</artifactId>
+        <version>2.13.1</version>
+        <exclusions>
+          <exclusion>
+            <artifactId>log4j</artifactId>
+            <groupId>log4j</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>slf4j-log4j12</artifactId>
+            <groupId>org.slf4j</groupId>
+          </exclusion>
+          <exclusion>
+            <artifactId>hibernate-validator</artifactId>
+            <groupId>org.hibernate</groupId>
+          </exclusion>
+        </exclusions>
       </dependency>
       <!-- Logging -->
       <dependency>
@@ -199,6 +234,7 @@
     <module>engine</module>
   </modules>
 
+<!--
   <profiles>
     <profile>
       <id>release-sign-artifacts</id>
@@ -231,5 +267,5 @@
       </build>
     </profile>
   </profiles>
-
+-->
 </project>

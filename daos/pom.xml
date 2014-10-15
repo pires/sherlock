@@ -12,49 +12,17 @@
   <packaging>ejb</packaging>
   <name>Data Access Objects (DAOs)</name>
 
-  <properties>
-    <!--<cassandra.version>1.2.9</cassandra.version>-->
-    <jee.version>7.0</jee.version>
-  </properties>
-
-  <repositories>
-    <repository>
-      <id>sonatype-nexus</id>
-      <name>Kundera Public Repository</name>
-      <url>https://oss.sonatype.org/content/repositories/releases</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
-    </repository>
-    <repository>
-      <id>kundera-missing</id>
-      <name>Kundera Public Missing Resources Repository</name>
-      <url>http://kundera.googlecode.com/svn/maven2/maven-missing-resources</url>
-      <releases>
-        <enabled>true</enabled>
-      </releases>
-      <snapshots>
-        <enabled>true</enabled>
-      </snapshots>
-    </repository>
-  </repositories>
-
   <dependencies>
     <!-- Java EE -->
     <dependency>
       <groupId>javax</groupId>
       <artifactId>javaee-api</artifactId>
-      <version>${jee.version}</version>
       <scope>provided</scope>
     </dependency>
     <!-- Kundera & Cassandra -->
     <dependency>
       <groupId>com.impetus.kundera.client</groupId>
       <artifactId>kundera-cassandra</artifactId>
-      <version>2.13.1</version>
       <exclusions>
         <exclusion>
           <artifactId>log4j</artifactId>
@@ -79,12 +47,13 @@
         <artifactId>maven-ejb-plugin</artifactId>
         <version>2.3</version>
         <configuration>
-          <ejbVersion>3.1</ejbVersion>
+          <ejbVersion>3.2</ejbVersion>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.7</version>
         <configuration>
           <skip>true</skip>
         </configuration>

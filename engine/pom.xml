@@ -14,12 +14,17 @@
 
   <dependencies>
     <dependency>
-      <groupId>pt.lighthouselabs.sherlock</groupId>
+      <groupId>javax</groupId>
+      <artifactId>javaee-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
       <artifactId>sherlock-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
-      <groupId>pt.lighthouselabs.sherlock</groupId>
+      <groupId>${project.groupId}</groupId>
       <artifactId>sherlock-daos</artifactId>
       <version>${project.version}</version>
     </dependency>
@@ -27,25 +32,13 @@
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>2.10</version>
       <scope>provided</scope>
-      <type>jar</type>
     </dependency>
-    <!--
-    <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet</artifactId>
-      <scope>provided</scope>
-    </dependency>-->
     <dependency>
       <groupId>com.google.code.gson</groupId>
       <artifactId>gson</artifactId>
     </dependency>
     <!-- Other dependencies -->
-    <!--<dependency>
-      <groupId>joda-time</groupId>
-      <artifactId>joda-time</artifactId>
-    </dependency>-->
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
@@ -61,20 +54,12 @@
       <artifactId>testng</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- EJB3 unit-testing -->
-    <!-- ATTENTION: this dependency should be located above 'javaee-api' 
-    dependency. Otherwise the tests won't run. See http://forums.netbeans.org/topic21275.html -->
+    <!-- unit-testing -->
     <dependency>
       <groupId>org.glassfish.main.extras</groupId>
       <artifactId>glassfish-embedded-all</artifactId>
       <version>4.1</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.ejb</groupId>
-      <artifactId>ejb-api</artifactId>
-      <version>3.0</version>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -100,6 +85,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-clean-plugin</artifactId>
+        <version>2.5</version>
         <configuration>
           <filesets>
             <fileset>
@@ -158,27 +144,20 @@
           definition - missing lookup attribute" is not thrown by embedded Glassfish, 
           as the JARs in this endorsed dir have the Resource class required by embedded 
           Glassfish. -->
-          <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m
-            -Djava.endorsed.dirs=${settings.localRepository}/org/glassfish/javax.annotation/3.2-b06/</argLine>
+          <argLine>-Xms512m -Xmx1024m -XX:MaxPermSize=512m</argLine>
           <skip>false</skip>
           <threadCount>1</threadCount>
-          <parallel>true</parallel>
+          <parallel>false</parallel>
           <includes>
             <include>**/SetupTestSuite.java</include>
             <include>**/*Test.java</include>
           </includes>
         </configuration>
-        <dependencies>
-          <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.annotation</artifactId>
-            <version>3.2-b06</version>
-          </dependency>
-        </dependencies>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-deploy-plugin</artifactId>
+        <version>2.7</version>
         <configuration>
           <skip>true</skip>
         </configuration>
