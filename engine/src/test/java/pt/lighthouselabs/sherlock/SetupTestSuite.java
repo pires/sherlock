@@ -13,7 +13,6 @@
 package pt.lighthouselabs.sherlock;
 
 import java.io.File;
-
 import org.apache.cassandra.service.EmbeddedCassandraService;
 import org.glassfish.embeddable.CommandResult;
 import org.glassfish.embeddable.Deployer;
@@ -40,7 +39,7 @@ public final class SetupTestSuite {
 
 	/**
 	 * This is meant to run before all tests are performed.
-	 * 
+	 *
 	 * @throws Throwable
 	 */
 	@BeforeSuite
@@ -80,7 +79,7 @@ public final class SetupTestSuite {
 			 * ignore EJB timers, as they blow up :-/
 			 */
 			archive.addClassPath(new File("../api/target", "classes"));
-			archive.addClassPath(new File("../daos/target", "classes/pt"));
+			archive.addClassPath(new File("../daos/target", "classes"));
 			archive.addClassPath(new File("target", "classes"));
 			archive.addClassPath(new File("target", "test-classes"));
 			archive.addMetadata(new File("src/main/webapp/WEB-INF", "web.xml"));
@@ -92,13 +91,15 @@ public final class SetupTestSuite {
 			logger.error(
 			        "There was an error while setting up the testing environment.",
 			        e);
+      throw new RuntimeException(e);
 		}
+    logger.info("Application sucessfully deployed");
 	}
 
 	/**
 	 * @throws GlassFishException
 	 *             This is meant to run after all tests are performed.
-	 * 
+	 *
 	 * @throws
 	 */
 	@AfterSuite

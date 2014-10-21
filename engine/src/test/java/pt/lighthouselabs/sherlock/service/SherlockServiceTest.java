@@ -12,9 +12,8 @@
  */
 package pt.lighthouselabs.sherlock.service;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
-
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -22,19 +21,15 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.joda.time.DateTime;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
-
 import pt.lighthouselabs.sherlock.RESTClient;
 import pt.lighthouselabs.sherlock.SetupTestSuite;
 import pt.lighthouselabs.sherlock.model.AuditRecord;
 import pt.lighthouselabs.sherlock.rest.SherlockService;
-
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * Tests {@link SherlockService}.
@@ -46,7 +41,7 @@ public class SherlockServiceTest {
 
 	/**
 	 * Tests reading a list of {@link AuditRecord}.
-	 * 
+	 *
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
@@ -66,7 +61,7 @@ public class SherlockServiceTest {
 
 	/**
 	 * Tests reading a list of {@link AuditRecord} by application ID.
-	 * 
+	 *
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
@@ -91,7 +86,7 @@ public class SherlockServiceTest {
 	/**
 	 * Tests reading a list of {@link AuditRecord} by application ID and between
 	 * time window.
-	 * 
+	 *
 	 * @throws ClientProtocolException
 	 * @throws IOException
 	 */
@@ -101,7 +96,7 @@ public class SherlockServiceTest {
 		Map<String, String> params = new HashMap<String, String>();
 		params.put("appId", "APP1");
 		params.put("begin", "1");
-		final Long timestamp = DateTime.now().getMillis();
+		final Long timestamp = System.currentTimeMillis();
 		params.put("end", Long.toString(timestamp));
 		HttpResponse response = RESTClient.doHttpGet(
 		        URL.concat("/list/by_app_id_and_between_timestamps"), null,

@@ -17,7 +17,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.annotations.BeforeClass;
@@ -55,7 +54,7 @@ public class AuditRecordDaoTest extends AbstractTest {
 
 	@Test
 	public void find_all_by_appId_and_between_time_interval() {
-		final long timestamp = DateTime.now().getMillis();
+		final long timestamp = System.currentTimeMillis();
 		for (AuditRecord record : getAuditRecordDao()
 		        .find_all_by_appId_and_between_time_interval(APP1, 1L,
 		                timestamp)) {

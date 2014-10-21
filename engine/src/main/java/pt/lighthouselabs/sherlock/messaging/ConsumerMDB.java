@@ -18,10 +18,8 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.ObjectMessage;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import pt.lighthouselabs.sherlock.Sherlock;
 import pt.lighthouselabs.sherlock.dao.AuditRecordDao;
 import pt.lighthouselabs.sherlock.model.AuditRecord;
@@ -42,6 +40,7 @@ public class ConsumerMDB implements MessageListener {
 	/**
 	 * when a JMS message is received, do this.
 	 */
+  @Override
 	public void onMessage(final Message msg) {
 		try {
 			ObjectMessage oMsg = (ObjectMessage) msg;

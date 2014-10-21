@@ -12,14 +12,13 @@
  */
 package pt.lighthouselabs.sherlock.model;
 
+import com.google.common.base.MoreObjects;
+import com.impetus.kundera.index.Index;
+import com.impetus.kundera.index.IndexCollection;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-
-import com.google.common.base.Objects;
-import com.impetus.kundera.index.Index;
-import com.impetus.kundera.index.IndexCollection;
 
 @Entity
 @Table(name = "audit_records", schema = "SherlockKS@SherlockPU")
@@ -145,7 +144,7 @@ public class AuditRecord {
 
 	@Override
 	public String toString() {
-		return Objects.toStringHelper(this).add("id", id).add("method", method)
+		return MoreObjects.toStringHelper(this).add("id", id).add("method", method)
 		        .add("action", action).add("elapsed", elapsed)
 		        .add("requestBody", requestBody)
 		        .add("responseBody", responseBody).toString();
