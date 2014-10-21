@@ -26,14 +26,18 @@ public abstract class AbstractDao<T> {
   @PersistenceUnit(unitName = "SherlockPU")
   private EntityManagerFactory emf;
 
+  EntityManager manager;
+
 	public AbstractDao(Class<T> entityClass) {
 		this.entityClass = entityClass;
 	}
 
-	public EntityManager getEntityManager() {
-    EntityManager em = this.emf.createEntityManager();
-    em.getTransaction().begin();
-		return em;
+  public synchronized EntityManager getEntityManager() {
+    if (manager == null) {
+      manager = this.emf.createEntityManager();
+    }
+    manager.getTransaction().begin();
+    return manager;
 	}
 
 	public void create(T entity) {
