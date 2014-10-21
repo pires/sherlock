@@ -76,7 +76,7 @@ public class AuditingDynamicFeature implements DynamicFeature {
     final Method resourceMethod = resourceInfo.getResourceMethod();
 
     Audit ra = resourceMethod.getAnnotation(Audit.class);
-    if (resourceMethod.getAnnotation(Audit.class) != null) {
+    if (ra != null) {
 
       context.register(
           new AuditingFilter(ra.value(), producer, webRequest));
